@@ -34,7 +34,7 @@ jobs:
         ArtifactName: scalaIRC
 
 - job: B
-  displayName: 'Test scalaIRC'
+  displayName: 'Prepare test environment'
   dependsOn: A
   pool:
     vmImage: 'ubuntu-latest'
@@ -65,3 +65,42 @@ jobs:
       archiveFilePatterns: '*.zip'
       destinationFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
       cleanDestinationFolder: true
+
+  - task: CopyFiles@2
+    displayName: 'Copy scalaIRC'
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/scalaIRC-test/scalaIRC/target/scala-2.13'
+      Contents: '**'
+      TargetFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
+
+  - task: CopyFiles@2
+    displayName: 'Copy punkIRC'
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/scalaIRC-test/punkIRC/target/pricefield'
+      Contents: '**'
+      TargetFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
+
+- job: C
+  displayName: 'Test scalaIRC'
+  dependsOn: B
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Bash@3
+    displayName: 'Navigate to test directory'
+    inputs:
+      targetType: 'inline'
+      script: 'cd $(System.ArtifactsDirectory)/scalaIRC-test'
+
+  - task: Bash@3
+    displayName: 'Execute Tests'
+    inputs:
+      targetType: 'inline'
+      script: 'java -jar priceIRC.jar -e="scalaIRC" -p="6667" -t="Ping"'
+
+  - task: PublishSymbols@2
+    inputs:
+      SymbolsFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
+      SearchPattern: 'logs/**'
+      SymbolServerType: 'TeamServices'
+      SymbolsArtifactName: 'TestResults_$(BuildConfiguration)'
