@@ -87,7 +87,7 @@ jobs:
   - task: DownloadPipelineArtifact@2
     inputs:
       buildType: 'current'
-      targetPath: '$(Pipeline.Workspace)'
+      targetPath: '$(Pipeline.Workspace)/scalaIRC-test'
       artifactName: 'testENV'
 
   - task: Bash@3
