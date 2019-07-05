@@ -1,37 +1,58 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+jobs:
+- job: A
+  pool:
+    vmImage: 'ubuntu-latest'
+  displayName: 'Assembly scalaIRC'
+  steps:
+    - task: Bash@3
+      displayName: 'Install sbt'
+      inputs:
+        targetType: 'inline'
+        script: 'echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823 && sudo apt-get update && sudo apt-get install sbt'
 
-steps:
-  - task: Bash@3
-    displayName: 'Install sbt'
-    inputs:
-      targetType: 'inline'
-      script: 'echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823 && sudo apt-get update && sudo apt-get install sbt'
+    - task: Bash@3
+      displayName: 'Assembly application'
+      inputs:
+        targetType: 'inline'
+        script: 'sbt assembly'
 
-  - task: Bash@3
-    displayName: 'Assembly application'
-    inputs:
-      targetType: 'inline'
-      script: 'sbt assembly'
+    - task: CopyFiles@2
+      displayName: 'Copy Files'
+      inputs:
+        SourceFolder: '$(system.defaultworkingdirectory)'
+        Contents: 'target/scala-2.13/*.jar'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+        CleanTargetFolder: true
 
-  - task: CopyFiles@2
-    displayName: 'Copy Files'
-    inputs:
-      SourceFolder: '$(system.defaultworkingdirectory)'
-      Contents: 'target/scala-2.13/*.jar'
-      TargetFolder: '$(build.artifactstagingdirectory)'
-      CleanTargetFolder: true
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: ScalaIRC'
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+        ArtifactName: scalaIRC
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: ScalaIRC'
+- job: B
+  displayName: 'Test scalaIRC'
+  dependsOn: A
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download scalaIRC'
     inputs:
-      PathtoPublish: '$(build.artifactstagingdirectory)'
-      ArtifactName: scalaIRC
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'scalaIRC'
+      downloadPath: '$(System.ArtifactsDirectory)'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'specific'
+      project: 'a6a25cf0-005d-4291-b9a0-5abb6c4afdef'
+      pipeline: '6'
+      buildVersionToDownload: 'latestFromBranch'
+      branchName: 'refs/heads/master'
+      downloadType: 'single'
+      downloadPath: '$(System.ArtifactsDirectory)'
