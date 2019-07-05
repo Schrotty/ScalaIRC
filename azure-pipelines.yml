@@ -21,24 +21,3 @@ steps:
     inputs:
       targetType: 'inline'
       script: 'sbt assembly'
-
-  - task: Bash@3
-    displayName: 'Install sonar scanner'
-    inputs:
-      targetType: 'inline'
-      script: 'local SONAR_SCANNER_VERSION=3.3.0.1492 &&
-               export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION &&
-               rm -rf $SONAR_SCANNER_HOME &&
-               mkdir -p $SONAR_SCANNER_HOME &&
-               curl -sSLo $HOME/.sonar/sonar-scanner.zip http://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/$SONAR_SCANNER_VERSION/sonar-scanner-cli-$SONAR_SCANNER_VERSION.zip &&
-               unzip $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/ &&
-               rm $HOME/.sonar/sonar-scanner.zip &&
-               export PATH=$SONAR_SCANNER_HOME/bin:$PATH &&
-               export SONAR_SCANNER_OPTS="-server"'
-
-  - task: Bash@3
-    displayName: 'Run sonar scanner'
-    inputs:
-      targetType: 'inline'
-      script: 'mvn sonar:sonar -Dsonar.projectKey=Schrotty_ScalaIRC  -Dsonar.organization=schrotty-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonar.login)'
-
