@@ -21,3 +21,17 @@ steps:
     inputs:
       targetType: 'inline'
       script: 'sbt assembly'
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files'
+    inputs:
+      SourceFolder: '$(system.defaultworkingdirectory)'
+      Contents: 'target/scala-2.13/*.jar'
+      TargetFolder: '$(build.artifactstagingdirectory)'
+      CleanTargetFolder: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ScalaIRC'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+      ArtifactName: scalaIRC
