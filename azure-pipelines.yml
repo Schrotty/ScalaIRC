@@ -59,30 +59,17 @@ jobs:
       artifactName: 'punkIRC'
       downloadPath: '$(System.ArtifactsDirectory)'
 
-  - task: ExtractFiles@1
-    displayName: 'Extract artifacts'
-    inputs:
-      archiveFilePatterns: '*.zip'
-      destinationFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
-      cleanDestinationFolder: true
-
-  - task: Bash@3
-    displayName: 'DEBUG'
-    inputs:
-      targetType: 'inline'
-      script: 'cd $(System.ArtifactsDirectory)/scalaIRC-test && ls -l'
-
   - task: CopyFiles@2
     displayName: 'Copy scalaIRC'
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/scalaIRC-test/scalaIRC/target/scala-2.13'
+      SourceFolder: '$(System.ArtifactsDirectory)/scalaIRC/target/scala-2.13'
       Contents: '**'
       TargetFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
 
   - task: CopyFiles@2
     displayName: 'Copy punkIRC'
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/scalaIRC-test/punkIRC/target/pricefield'
+      SourceFolder: '$(System.ArtifactsDirectory)/punkIRC/target/pricefield'
       Contents: '**'
       TargetFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
 
