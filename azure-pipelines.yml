@@ -66,6 +66,12 @@ jobs:
       destinationFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
       cleanDestinationFolder: true
 
+  - task: Bash@3
+    displayName: 'DEBUG'
+    inputs:
+      targetType: 'inline'
+      script: 'cd $(System.ArtifactsDirectory)/scalaIRC-test && ls -l'
+
   - task: CopyFiles@2
     displayName: 'Copy scalaIRC'
     inputs:
