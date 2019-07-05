@@ -94,7 +94,7 @@ jobs:
     displayName: 'Navigate to test directory'
     inputs:
       targetType: 'inline'
-      script: 'cd $$(Pipeline.Workspace)/scalaIRC-test'
+      script: 'cd $(Pipeline.Workspace)/scalaIRC-test'
 
   - task: Bash@3
     displayName: 'Execute Tests'
@@ -104,7 +104,7 @@ jobs:
 
   - task: PublishSymbols@2
     inputs:
-      SymbolsFolder: '$$(Pipeline.Workspace)/scalaIRC-test'
+      SymbolsFolder: '$(Pipeline.Workspace)/scalaIRC-test'
       SearchPattern: 'logs/**'
       SymbolServerType: 'TeamServices'
       SymbolsArtifactName: 'TestResults_$(BuildConfiguration)'
