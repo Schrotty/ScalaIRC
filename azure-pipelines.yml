@@ -94,7 +94,7 @@ jobs:
     displayName: 'Execute Tests'
     inputs:
       targetType: 'inline'
-      script: 'cd $(Pipeline.Workspace)/scalaIRC-test && ls -l && java -jar priceIRC.jar -e="scalaIRC" -p="6667" -t="Ping" -nvc'
+      script: 'set -e && cd $(Pipeline.Workspace)/scalaIRC-test && java -jar priceIRC.jar -e="scalaIRC" -p="6667" -t="Ping" -nvc'
 
   - task: PublishSymbols@2
     displayName: 'Publish results'
