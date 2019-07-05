@@ -96,10 +96,8 @@ jobs:
       targetType: 'inline'
       script: 'cd $(Pipeline.Workspace)/scalaIRC-test && java -jar priceIRC.jar -e="scalaIRC" -p="6667" -t="Ping" -nvc || echo "Done!"'
 
-  - task: PublishSymbols@2
-    displayName: 'Publish results'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: results'
     inputs:
-      SymbolsFolder: '$(Pipeline.Workspace)/scalaIRC-test'
-      SearchPattern: 'logs/**'
-      SymbolServerType: 'TeamServices'
-      SymbolsArtifactName: 'TestResults_$(BuildConfiguration)'
+      PathtoPublish: '$(Pipeline.Workspace)/scalaIRC-test/logs'
+      ArtifactName: results
