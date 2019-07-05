@@ -97,12 +97,18 @@ jobs:
       script: 'cd $(Pipeline.Workspace)/scalaIRC-test'
 
   - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: 'ls -l'
+
+  - task: Bash@3
     displayName: 'Execute Tests'
     inputs:
       targetType: 'inline'
-      script: 'java -jar priceIRC.jar -e="scalaIRC" -p="6667" -t="Ping"'
+      script: 'java -jar priceIRC.jar -e="scalaIRC" -p="6667" -t="Ping" -nvc'
 
   - task: PublishSymbols@2
+    displayName: 'Publish results'
     inputs:
       SymbolsFolder: '$(Pipeline.Workspace)/scalaIRC-test'
       SearchPattern: 'logs/**'
