@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - script: apt update && apt install sbt
+  - script: sudo apt update && sudo apt install sbt
     displayName: 'install sbt'
 
   - script: sbt assembly
