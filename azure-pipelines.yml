@@ -91,21 +91,10 @@ jobs:
       artifactName: 'testENV'
 
   - task: Bash@3
-    displayName: 'Navigate to test directory'
-    inputs:
-      targetType: 'inline'
-      script: 'cd $(Pipeline.Workspace)/scalaIRC-test'
-
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: 'ls -l'
-
-  - task: Bash@3
     displayName: 'Execute Tests'
     inputs:
       targetType: 'inline'
-      script: 'java -jar priceIRC.jar -e="scalaIRC" -p="6667" -t="Ping" -nvc'
+      script: 'cd $(Pipeline.Workspace)/scalaIRC-test && ls -l && java -jar priceIRC.jar -e="scalaIRC" -p="6667" -t="Ping" -nvc'
 
   - task: PublishSymbols@2
     displayName: 'Publish results'
