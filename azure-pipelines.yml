@@ -73,17 +73,28 @@ jobs:
       Contents: '**'
       TargetFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
 
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(System.ArtifactsDirectory)/scalaIRC-test'
+      artifact: 'testENV'
+
 - job: C
   displayName: 'Test scalaIRC'
   dependsOn: B
   pool:
     vmImage: 'ubuntu-latest'
   steps:
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'current'
+      targetPath: '$(Pipeline.Workspace)'
+      artifactName: 'testENV'
+
   - task: Bash@3
     displayName: 'Navigate to test directory'
     inputs:
       targetType: 'inline'
-      script: 'cd $(System.ArtifactsDirectory)/scalaIRC-test'
+      script: 'cd $$(Pipeline.Workspace)/scalaIRC-test'
 
   - task: Bash@3
     displayName: 'Execute Tests'
@@ -93,7 +104,7 @@ jobs:
 
   - task: PublishSymbols@2
     inputs:
-      SymbolsFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
+      SymbolsFolder: '$$(Pipeline.Workspace)/scalaIRC-test'
       SearchPattern: 'logs/**'
       SymbolServerType: 'TeamServices'
       SymbolsArtifactName: 'TestResults_$(BuildConfiguration)'
