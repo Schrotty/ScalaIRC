@@ -48,6 +48,7 @@ jobs:
       downloadPath: '$(System.ArtifactsDirectory)'
 
   - task: DownloadBuildArtifacts@0
+    displayName: 'Download punkIRC'
     inputs:
       buildType: 'specific'
       project: 'a6a25cf0-005d-4291-b9a0-5abb6c4afdef'
@@ -55,4 +56,12 @@ jobs:
       buildVersionToDownload: 'latestFromBranch'
       branchName: 'refs/heads/master'
       downloadType: 'single'
+      artifactName: 'punkIRC'
       downloadPath: '$(System.ArtifactsDirectory)'
+
+  - task: ExtractFiles@1
+    displayName: 'Extract artifacts'
+    inputs:
+      archiveFilePatterns: '*.zip'
+      destinationFolder: '$(System.ArtifactsDirectory)/scalaIRC-test'
+      cleanDestinationFolder: true
