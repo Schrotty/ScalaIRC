@@ -94,10 +94,17 @@ jobs:
     displayName: 'Execute Tests'
     inputs:
       targetType: 'inline'
-      script: 'cd $(Pipeline.Workspace)/scalaIRC-test && java -jar priceIRC.jar -e="scalaIRC.jar" -p="6667" -t="Ping" -nvc -j || echo "Done!"'
+      script: 'cd $(Pipeline.Workspace)/scalaIRC-test && java -jar priceIRC.jar -e="scalaIRC.jar" -p="6667" -t="Ping" -nvc -j -r || echo "Done!"'
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: results'
     inputs:
       PathtoPublish: '$(Pipeline.Workspace)/scalaIRC-test/logs'
       ArtifactName: results
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/TEST-*.xml'
+      searchFolder: '$(Pipeline.Workspace)/scalaIRC-test/logs'
+      testRunTitle: 'priceIRC results'
